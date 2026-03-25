@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Congratulations Tarry</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --lavender-light: #f3eeff;
+      --lavender-mid:   #c9a8f0;
+      --lavender-deep:  #7c4dbc;
+      --purple-dark:    #3b1f6e;
+      --purple-soft:    #9b72cf;
+      --white:          #ffffff;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #ede0ff 0%, #f8f3ff 55%, #ddd0f8 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Cormorant Garamond', serif;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .petal {
+      position: fixed;
+      border-radius: 60% 40% 60% 40%;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 1;
+      animation: fall linear infinite;
+    }
+    @keyframes fall {
+      0%   { transform: translateY(-40px) rotate(0deg); opacity: 0; }
+      10%  { opacity: 0.55; }
+      90%  { opacity: 0.3; }
+      100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+    }
+
+    .card {
+      position: relative;
+      z-index: 10;
+      background: var(--white);
+      border-radius: 16px;
+      padding: 56px 52px 48px;
+      max-width: 460px;
+      width: 90%;
+      text-align: center;
+      box-shadow:
+        0 4px 20px rgba(124,77,188,0.12),
+        0 16px 48px rgba(124,77,188,0.18),
+        inset 0 0 0 1.5px rgba(155,114,207,0.3);
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      inset: 10px;
+      border: 1px dashed rgba(155,114,207,0.3);
+      border-radius: 10px;
+      pointer-events: none;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 15px 48px;
+      background: linear-gradient(135deg, var(--lavender-deep), var(--purple-soft));
+      color: white;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.15rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 4px 18px rgba(124,77,188,0.35);
+    }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(124,77,188,0.45); }
+    .btn:active { transform: translateY(0); }
+
+    .hint {
+      font-size: 0.95rem;
+      color: #a889d4;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 28px;
+    }
+
+    .message {
+      display: none;
+      animation: fadeUp 0.8s ease forwards;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(18px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .smiley-wrap {
+      margin: 0 auto 12px;
+      width: 72px;
+      height: 72px;
+      animation: bounce 1.8s ease-in-out infinite;
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-8px); }
+    }
+
+    .flower-wrap {
+      margin: 0 auto 28px;
+      width: 100px;
+      height: 100px;
+      animation: sway 4s ease-in-out infinite;
+      transform-origin: bottom center;
+    }
+    @keyframes sway {
+      0%, 100% { transform: rotate(-4deg); }
+      50%       { transform: rotate(4deg); }
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      color: var(--purple-dark);
+      margin-bottom: 6px;
+      line-height: 1.2;
+    }
+    h1 span { color: var(--lavender-deep); font-style: italic; }
+
+    .divider {
+      width: 50px;
+      height: 2px;
+      background: linear-gradient(to right, var(--lavender-mid), var(--purple-soft));
+      margin: 18px auto 20px;
+      border-radius: 2px;
+    }
+
+    p.body-text {
+      font-size: 1.12rem;
+      color: #5a4080;
+      line-height: 1.85;
+      font-weight: 300;
+    }
+
+    .note {
+      margin-top: 22px;
+      font-size: 0.92rem;
+      color: var(--purple-soft);
+      font-style: italic;
+      letter-spacing: 0.04em;
+    }
+
+    .sparkle {
+      position: fixed;
+      pointer-events: none;
+      z-index: 999;
+      border-radius: 50%;
+      animation: burst 0.7s ease-out forwards;
+    }
+    @keyframes burst {
+      0%   { transform: translate(0,0) scale(1); opacity: 1; }
+      100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card" id="card">
+
+    <div id="btn-state">
+      <p class="hint">A message awaits you</p>
+      <button class="btn" onclick="reveal(event)">Click Me</button>
+    </div>
+
+    <div class="message" id="msg-state">
+
+      <!-- Smiley face -->
+      <div class="smiley-wrap">
+        <svg viewBox="0 0 70 70" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="35" cy="35" r="33" fill="#f3eeff" stroke="#9b72cf" stroke-width="2.5"/>
+          <circle cx="24" cy="28" r="4" fill="#7c4dbc"/>
+          <circle cx="25.5" cy="26.5" r="1.5" fill="white"/>
+          <circle cx="46" cy="28" r="4" fill="#7c4dbc"/>
+          <circle cx="47.5" cy="26.5" r="1.5" fill="white"/>
+          <path d="M22 42 Q35 56 48 42" stroke="#7c4dbc" stroke-width="3" fill="none" stroke-linecap="round"/>
+          <circle cx="18" cy="42" r="5" fill="#c9a8f0" opacity="0.45"/>
+          <circle cx="52" cy="42" r="5" fill="#c9a8f0" opacity="0.45"/>
+        </svg>
+      </div>
+
+      <!-- Lavender flower -->
+      <div class="flower-wrap">
+        <svg viewBox="0 0 110 110" xmlns="http://www.w3.org/2000/svg">
+          <line x1="55" y1="72" x2="55" y2="106" stroke="#7a6a9a" stroke-width="3" stroke-linecap="round"/>
+          <path d="M55 92 Q42 86 40 76 Q50 80 55 92Z" fill="#8b7ab0"/>
+          <path d="M55 84 Q68 78 70 68 Q60 73 55 84Z" fill="#9b8ac0"/>
+          <ellipse cx="55" cy="46" rx="9" ry="16" fill="#c9a8f0" transform="rotate(0,55,60)"/>
+          <ellipse cx="55" cy="46" rx="9" ry="16" fill="#b899e8" transform="rotate(45,55,60)"/>
+          <ellipse cx="55" cy="46" rx="9" ry="16" fill="#c9a8f0" transform="rotate(90,55,60)"/>
+          <ellipse cx="55" cy="46" rx="9" ry="16" fill="#b899e8" transform="rotate(135,55,60)"/>
+          <ellipse cx="55" cy="46" rx="9" ry="16" fill="#c9a8f0" transform="rotate(180,55,60)"/>
+          <ellipse cx="55" cy="46" rx="9" ry="16" fill="#b899e8" transform="rotate(225,55,60)"/>
+          <ellipse cx="55" cy="46" rx="9" ry="16" fill="#c9a8f0" transform="rotate(270,55,60)"/>
+          <ellipse cx="55" cy="46" rx="9" ry="16" fill="#b899e8" transform="rotate(315,55,60)"/>
+          <circle cx="55" cy="60" r="10" fill="#7c4dbc"/>
+          <circle cx="55" cy="60" r="6"  fill="#9b72cf"/>
+          <circle cx="55" cy="60" r="3"  fill="#e8d9ff"/>
+        </svg>
+      </div>
+
+      <h1>Congratulations,<br/><span>Tarry!</span></h1>
+      <div class="divider"></div>
+      <p class="body-text">
+        This flower is a token of celebration for your wonderful achievement.
+        May it be a hopeful start to an exciting new chapter —
+        and may it bring warmth and joy to your new desk.
+      </p>
+      <p class="note">Wishing you every success ahead 💜</p>
+    </div>
+
+  </div>
+
+  <script>
+    const colors = ['#c9a8f0','#b899e8','#ddd0f8','#9b72cf','#e8d9ff','#a889d4'];
+    for (let i = 0; i < 22; i++) {
+      const p = document.createElement('div');
+      p.className = 'petal';
+      p.style.left = Math.random() * 100 + 'vw';
+      p.style.background = colors[Math.floor(Math.random() * colors.length)];
+      p.style.animationDuration = (7 + Math.random() * 10) + 's';
+      p.style.animationDelay = (Math.random() * 14) + 's';
+      p.style.width  = (7 + Math.random() * 9) + 'px';
+      p.style.height = (9 + Math.random() * 11) + 'px';
+      document.body.appendChild(p);
+    }
+
+    function reveal(e) {
+      for (let i = 0; i < 24; i++) {
+        const s = document.createElement('div');
+        s.className = 'sparkle';
+        const angle = Math.random() * 2 * Math.PI;
+        const dist  = 60 + Math.random() * 140;
+        s.style.left = e.clientX + 'px';
+        s.style.top  = e.clientY + 'px';
+        s.style.width = (6 + Math.random() * 8) + 'px';
+        s.style.height = s.style.width;
+        s.style.setProperty('--tx', Math.cos(angle) * dist + 'px');
+        s.style.setProperty('--ty', Math.sin(angle) * dist + 'px');
+        s.style.background = colors[Math.floor(Math.random() * colors.length)];
+        document.body.appendChild(s);
+        setTimeout(() => s.remove(), 800);
+      }
+      document.getElementById('btn-state').style.display = 'none';
+      document.getElementById('msg-state').style.display = 'block';
+    }
+  </script>
+</body>
+</html>
